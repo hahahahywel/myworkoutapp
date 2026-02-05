@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>My Personal Gym Log</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <style>
+        :root { --primary: #007AFF; --bg: #f2f2f7; --card: #ffffff; }
+        body { font-family: -apple-system, system-ui; background: var(--bg); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .app-card { background: var(--card); padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { margin-top: 0; color: #1c1c1e; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+        button:active { opacity: 0.7; }
+        #history { margin-top: 20px; width: 100%; max-width: 400px; }
+        .log-entry { background: white; padding: 12px; border-radius: 10px; margin-bottom: 8px; border-left: 5px solid var(--primary); display: flex; justify-content: space-between; }
+        .log-date { font-size: 12px; color: gray; }
+    </style>
+</head>
+<body>
+
+    <div class="app-card">
+        <h2>💪 Log Workout</h2>
+        <input type="text" id="exercise" placeholder="Exercise Name (e.g. Squat)">
+        <input type="number" id="weight" placeholder="Weight (lbs/kg)">
+        <input type="number" id="reps" placeholder="Reps">
+        <button onclick="saveLog()">Save Set</button>
+    </div>
+
+    <div id="history">
+        </div>
+
+    <script>
+        // Load data when page opens
+        window.onload = displayLogs;
+
+        function saveLog() {
+            const exercise = document.getElementById('exercise').value;
+            const weight = document.getElementById('weight').value;
+            const reps = document.getElementById('reps').value;
+
+            if (!exercise || !weight || !reps) return alert("Fill everything out!");
+
+            const entry = {
+                id: Date.now(),
+                exercise,
+                weight,
+                reps,
+                date: new Date().toLocaleDateString()
+            };
+
+            let logs = JSON.parse(localStorage.getItem('myWorkouts')) || [];
+            logs.unshift(entry); // Add to beginning
+            localStorage.setItem('myWorkouts', JSON.stringify(logs));
+
+            // Clear inputs
+            document.getElementById('weight').value = '';
+            document.getElementById('reps').value = '';
+            
+            displayLogs();
+        }
+
+        function displayLogs() {
+            const logs = JSON.parse(localStorage.getItem('myWorkouts')) || [];
+            const container = document.getElementById('history');
+            container.innerHTML = '<h3>Recent History</h3>';
+            
+            logs.forEach(log => {
+                container.innerHTML += `
+                    <div class="log-entry">
+                        <div>
+                            <strong>${log.exercise}</strong><br>
+                            <span class="log-date">${log.date}</span>
+                        </div>
+                        <div>${log.weight}kg x ${log.reps}</div>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "My Personal Trainer",
+  "short_name": "Workout",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#007AFF",
+  "icons": [{ "src": "icon.png", "sizes": "512x512", "type": "image/png" }]
+}
